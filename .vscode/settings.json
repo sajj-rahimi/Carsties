@@ -1,0 +1,17 @@
+{
+  "editor.cursorBlinking": "expand",
+  "editor.cursorSmoothCaretAnimation": "explicit",
+  "editor.fontFamily": "\"SF Mono, Menlo, Monaco, 'Courier New', monospace\"",
+  "editor.fontSize": 14,
+  "editor.fontVariations": true,
+  "editor.fontWeight": "bold",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "diffEditor.hideUnchangedRegions.contextLineCount": 3,
+  "editor.lineHeight": 1.6,
+  "workbench.sideBar.location": "right",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  }
+}
