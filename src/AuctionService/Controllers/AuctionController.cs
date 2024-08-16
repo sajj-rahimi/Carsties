@@ -29,7 +29,7 @@ public class AuctionController : ControllerBase
 
         return _mapper.Map<List<AuctionDTO>>(auctions);
     }
-
+    
     [HttpGet("{ID}")]
     public async Task<ActionResult<AuctionDTO>> GetAuction(Guid ID)
     {
@@ -42,7 +42,7 @@ public class AuctionController : ControllerBase
 
         return _mapper.Map<AuctionDTO>(auction);
     }
-
+    
     [HttpPost]
     public async Task<ActionResult<AuctionDTO>> CreateAuction(CreateAuctionDTO auctionDto)
     {
@@ -54,7 +54,7 @@ public class AuctionController : ControllerBase
                 ? CreatedAtAction(nameof(GetAuction), new { auction.Id }, _mapper.Map<AuctionDTO>(auction))
                 : BadRequest("Bad Request");
     }
-
+    
     [HttpPut("{ID}")]
     public async Task<ActionResult> UpdateAuction(Guid ID, UpdateAuctionDTO updatedDto)
     {
@@ -74,6 +74,7 @@ public class AuctionController : ControllerBase
             ? Ok()
             : BadRequest("Bad Request");
     }
+    
     [HttpDelete("{ID}")]
     public async Task<ActionResult> DeleteAuction(Guid ID)
     {
@@ -82,7 +83,7 @@ public class AuctionController : ControllerBase
         if (auction is null) NotFound();
 
         _context.Auctions.Remove(auction);
-        return (await _context.SaveChangesAsync() > 0)
+        return (await _context.SaveChangesAsync() > 0) 
             ? Ok()
             : BadRequest("Bad Request");
     }
