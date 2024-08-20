@@ -1,3 +1,5 @@
+using MassTransit;
+using SearchService.Cosumers;
 using SearchService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // var app = builder.Build();
 builder.Services.AddControllers();
-var app = builder.Build();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+    x.UsingRabbitMq((context, config) =>
+    {
+        config.ConfigureEndpoints(context);
+    });
+});
 
-app.UseAuthorization();
-app.MapControllers();
+var app = builder.Build();
 
 try
 {
@@ -22,6 +32,10 @@ catch (Exception ex)
 {
     Console.WriteLine(ex.Message);
 }
+
+app.UseAuthorization();
+app.MapControllers();
+
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())

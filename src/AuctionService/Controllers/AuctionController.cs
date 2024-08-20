@@ -1,6 +1,8 @@
 ﻿using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +14,13 @@ public class AuctionController : ControllerBase
 {
     private readonly AuctionDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public AuctionController(AuctionDbContext context, IMapper mapper)
+    public AuctionController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _context = context;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
 
     [HttpGet]
@@ -29,7 +33,7 @@ public class AuctionController : ControllerBase
 
         return _mapper.Map<List<AuctionDTO>>(auctions);
     }
-    
+
     [HttpGet("{ID}")]
     public async Task<ActionResult<AuctionDTO>> GetAuction(Guid ID)
     {
@@ -42,19 +46,29 @@ public class AuctionController : ControllerBase
 
         return _mapper.Map<AuctionDTO>(auction);
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<AuctionDTO>> CreateAuction(CreateAuctionDTO auctionDto)
     {
         var auction = _mapper.Map<Auction>(auctionDto);
         auction.Seller = "Test";
         _context.Auctions.Add(auction);
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (!result)
+            BadRequest("Bad Request");
+
+        await PublishAuction(auction);
+
         return
-            (await _context.SaveChangesAsync()) > 0
-                ? CreatedAtAction(nameof(GetAuction), new { auction.Id }, _mapper.Map<AuctionDTO>(auction))
-                : BadRequest("Bad Request");
+            CreatedAtAction(
+                nameof(GetAuction),
+                new { auction.Id },
+                _mapper.Map<AuctionDTO>(auction)
+            );
     }
-    
+
+
     [HttpPut("{ID}")]
     public async Task<ActionResult> UpdateAuction(Guid ID, UpdateAuctionDTO updatedDto)
     {
@@ -74,7 +88,7 @@ public class AuctionController : ControllerBase
             ? Ok()
             : BadRequest("Bad Request");
     }
-    
+
     [HttpDelete("{ID}")]
     public async Task<ActionResult> DeleteAuction(Guid ID)
     {
@@ -83,8 +97,15 @@ public class AuctionController : ControllerBase
         if (auction is null) NotFound();
 
         _context.Auctions.Remove(auction);
-        return (await _context.SaveChangesAsync() > 0) 
+        return (await _context.SaveChangesAsync() > 0)
             ? Ok()
             : BadRequest("Bad Request");
     }
+    #region Private Methods
+    private async Task PublishAuction(Auction auction)
+    {
+        var mappedAuction = _mapper.Map<AuctionDTO>(auction);
+        await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(mappedAuction));
+    }
+    #endregion
 }
