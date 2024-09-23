@@ -1,3 +1,4 @@
+using Contracts;
 using MassTransit;
 using SearchService.Cosumers;
 using SearchService.Data;
@@ -18,6 +19,11 @@ builder.Services.AddMassTransit(x =>
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
     x.UsingRabbitMq((context, config) =>
     {
+        config.ReceiveEndpoint("search-auction-created", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
         config.ConfigureEndpoints(context);
     });
 });

@@ -84,6 +84,8 @@ public class AuctionController : ControllerBase
         auction.Item.Model = updatedDto.Model ?? auction.Item.Model;
         auction.Item.Color = updatedDto.Color ?? auction.Item.Color;
 
+        await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
+
         return (await _context.SaveChangesAsync()) > 0
             ? Ok()
             : BadRequest("Bad Request");
@@ -96,7 +98,9 @@ public class AuctionController : ControllerBase
 
         if (auction is null) NotFound();
 
+        await _publishEndpoint.Publish(new AuctionDeleted { ID = auction.Id.ToString() });
         _context.Auctions.Remove(auction);
+
         return (await _context.SaveChangesAsync() > 0)
             ? Ok()
             : BadRequest("Bad Request");
