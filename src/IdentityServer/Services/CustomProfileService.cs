@@ -23,7 +23,7 @@ public class CustomProfileService : IProfileService
         var claims = new Claim[]{
             new("username", user.UserName)
         };
-        context.IssuedClaims.AddRange(existingClaims);
+        context.IssuedClaims.AddRange(claims);
         context.IssuedClaims.Add(existingClaims.FirstOrDefault(x => JwtClaimTypes.Name == x.Type));
     }
 
