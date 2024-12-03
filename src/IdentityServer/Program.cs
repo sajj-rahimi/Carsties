@@ -1,4 +1,6 @@
 ﻿using IdentityServer;
+using IdentityServer.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
