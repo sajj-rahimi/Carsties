@@ -37,9 +37,9 @@ interface SearchResult {
 }
 
 interface SearchResponse {
-  result: SearchResult[];
+  results: SearchResult[];
   totalCount: number;
-  pageNumber: number;
+  pageCount: number;
 }
 
 export default function SearchPage() {
@@ -66,7 +66,6 @@ export default function SearchPage() {
     setError(null);
 
     try {
-      // Build query parameters
       const params = new URLSearchParams();
       if (searchParams.searchTerm)
         params.append("searchTerm", searchParams.searchTerm);
@@ -308,9 +307,9 @@ export default function SearchPage() {
                 </div>
               </div>
 
-              {searchResponse.result.length > 0 ? (
+              {searchResponse.results.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {searchResponse.result.map((auction) => (
+                  {searchResponse.results.map((auction) => (
                     <Link
                       key={auction.id}
                       href={`/auction/${auction.id}`}

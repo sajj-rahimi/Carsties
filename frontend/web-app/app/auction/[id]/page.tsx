@@ -10,3 +10,4 @@ export default function AuctionDetailPage({ params }: AuctionDetailPageProps) {
   return <AuctionDetail auctionId={params.id} />;
 }
 
+

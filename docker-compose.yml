@@ -34,6 +34,8 @@ services:
       - IdentityServiceUrl=http://identity-svc
     ports:
       - 5249:80
+    volumes:
+      - ./src:/app/src
     depends_on:
       - postgres
       - rabbitmq
@@ -50,6 +52,8 @@ services:
       - AuctionServiceUrl=http://auction-svc
     ports:
       - 7002:80
+    volumes:
+      - ./src:/app/src
     depends_on:
       - mongodb
       - rabbitmq
@@ -65,6 +69,8 @@ services:
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;User Id=postgres;Password=postgrespw;Database=identity
     ports:
       - 5099:80
+    volumes:
+      - ./src:/app/src
     depends_on:
       - postgres
   gateway-svc:
@@ -78,6 +84,8 @@ services:
       - RabbitMq__HOST=rabbitmq
     ports:
       - 5175:80
+    volumes:
+      - ./src:/app/src
 volumes:
   pgdata:
   mongodata:

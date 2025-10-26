@@ -65,7 +65,6 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
     fetchAuction();
   }, [auctionId]);
 
-  // Calculate time remaining
   useEffect(() => {
     if (!auction) return;
 

@@ -29,7 +29,7 @@ public class SearchController : ControllerBase
                 x.AuctionEnd > DateTime.UtcNow &&
                 x.AuctionEnd < DateTime.UtcNow.AddHours(6)
                 ),
-            _ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
+            _ => query.Match(x => x.AuctionEnd < DateTime.UtcNow)
         };
 
         if (!string.IsNullOrEmpty(searchParams.Seller))
@@ -44,9 +44,9 @@ public class SearchController : ControllerBase
 
         return Ok(new
         {
-            result,
-            totalCount = result.TotalCount,
-            pageNumber = result.PageCount
+            results = result.Results,
+            pageCount = result.PageCount,
+            totalCount = result.TotalCount
         });
     }
 }
