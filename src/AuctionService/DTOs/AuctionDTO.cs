@@ -17,5 +17,5 @@ public class AuctionDTO
     public int Year { get; set; }
     public string Color { get; set; }
     public int Mileage { get; set; }
-
+    public string ImageUrl { get; set; }
 }

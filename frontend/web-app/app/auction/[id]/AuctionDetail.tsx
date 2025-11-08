@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   AiOutlineCar,
@@ -25,6 +26,7 @@ interface Auction {
   year: number;
   color: string;
   mileage: number;
+  imageUrl: string;
 }
 
 interface AuctionDetailProps {
@@ -197,7 +199,6 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Back Button */}
         <Link
           href="/auction"
           className="inline-flex items-center text-gray-600 hover:text-red-600 transition-colors mb-6"
@@ -207,19 +208,28 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Column - Car Image & Basic Info */}
           <div className="space-y-6">
-            {/* Car Image Placeholder */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <AiOutlineCar className="mx-auto text-gray-400 text-6xl mb-2" />
-                  <p className="text-gray-500">Car Image</p>
+              {auction.imageUrl ? (
+                <div className="aspect-video relative">
+                  <Image
+                    src={auction.imageUrl}
+                    fill
+                    loading="eager"
+                    className="object-cover"
+                    alt="Car image"
+                  />
                 </div>
-              </div>
+              ) : (
+                <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                  <div className="text-center">
+                    <AiOutlineCar className="mx-auto text-gray-400 text-6xl mb-2" />
+                    <p className="text-gray-500">Car Image</p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Car Details Card */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Vehicle Details
@@ -251,9 +261,7 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
             </div>
           </div>
 
-          {/* Right Column - Bidding Info */}
           <div className="space-y-6">
-            {/* Auction Status & Time */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-start mb-4">
                 <h1 className="text-3xl font-bold text-gray-900">
@@ -283,7 +291,6 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
               </div>
             </div>
 
-            {/* Bidding Information */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Bidding Information
@@ -323,7 +330,6 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
                 )}
               </div>
 
-              {/* Bid Button */}
               {auction.status.toLowerCase() === "live" && (
                 <div className="mt-6">
                   <button className="w-full bg-red-600 text-white py-4 px-6 rounded-lg hover:bg-red-700 transition-colors font-semibold text-lg">
@@ -336,7 +342,6 @@ export default function AuctionDetail({ auctionId }: AuctionDetailProps) {
               )}
             </div>
 
-            {/* Auction Timeline */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Auction Timeline
