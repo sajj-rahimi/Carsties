@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using MongoDB.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BiddingService.Consumers;
+using BiddingService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,10 +38,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHostedService<BiddingService.Services.CheckAuctionFinished>();
+builder.Services.AddScoped<GrpcAuctionClient>();
 
 var app = builder.Build();
 
-await DB.InitAsync("BiddingServiceDB", MongoClientSettings.FromConnectionString(app.Configuration.GetConnectionString("DefaultConnection")));
+await DB.InitAsync("BiddingServiceDB", MongoClientSettings.FromConnectionString(app.Configuration.GetConnectionString("BidDBConnection")));
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {

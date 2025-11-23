@@ -21,9 +21,8 @@ public class DbInitializer
         context.AddRange(Auctions);
         context.SaveChanges();
     }
-    public static List<Auction> Auctions => new List<Auction>{
-         new Auction
-            {
+    public static List<Auction> Auctions => [
+         new() {
                 Id = Guid.Parse("afbee524-5972-4075-8800-7d1f9d7b0a0c"),
                 Status = Status.Live,
                 ReservePrice = 20000,
@@ -199,5 +198,5 @@ public class DbInitializer
                     ImageUrl = "https://cdn.pixabay.com/photo/2017/08/02/19/47/vintage-2573090_960_720.jpg"
                 }
             }
-    };
+    ];
 }

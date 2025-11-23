@@ -73,6 +73,24 @@ services:
       - ./src:/app/src
     depends_on:
       - postgres
+  bid-svc:
+    image: sajjadrahimi4/sbid-svc:latest
+    build:
+      context: .
+      dockerfile: src/BiddingService/DockerFile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMq__HOST=rabbitmq
+      - ConnectionStrings__BidDBConnection=mongodb://root:mongopw@mongodb
+      - IdentityServiceUrl=http://identity-svc
+    ports:
+      - 7003:80
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - mongodb
+      - rabbitmq
   gateway-svc:
     image: sajjadrahimi4/gateway-svc:latest
     build:

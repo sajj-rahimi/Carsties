@@ -16,11 +16,13 @@ public class BidController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly GrpcAuctionClient _grpcAuctionClient;
 
-    public BidController(IMapper mapper, IPublishEndpoint publishEndpoint)
+    public BidController(IMapper mapper, IPublishEndpoint publishEndpoint, GrpcAuctionClient grpcAuctionClient)
     {
         _mapper = mapper;
         _publishEndpoint = publishEndpoint;
+        _grpcAuctionClient = grpcAuctionClient;
     }
 
     [Authorize]
@@ -31,8 +33,10 @@ public class BidController : ControllerBase
 
         if (auction is null)
         {
-            // TODO: check if auction service has that auction
-            return NotFound("Auction not found");
+            auction = _grpcAuctionClient.GetAuction(auctionID);
+
+            if (auction is null)
+                return NotFound("Auction not found");
         }
 
         if (auction.Seller == User.Identity.Name)
